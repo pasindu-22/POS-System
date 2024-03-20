@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.util.*;
 
@@ -39,13 +38,13 @@ public class POS implements Serializable{
             GloceryItem item;
             try {
                  item = getItemDetails();
-            } catch (ExitException e) {
+            } catch (ExitException e) {    // If cashier want to exit given exception will throw.
                 b.setTotal();
                 b.setTotalDiscount();
                 break;
             }
             if (item==null) {
-                continue;
+                continue;        //invalid item code will ask again to enter a correct one.
             }
             System.out.println("Enter quantity:");
             double quantity = sc.nextDouble();
@@ -75,7 +74,7 @@ public class POS implements Serializable{
         try{
             FileOutputStream fs = new FileOutputStream("Pendings.dat");
             ObjectOutputStream os = new ObjectOutputStream(fs);
-            os.writeObject(pendingBills);
+            os.writeObject(pendingBills);                       // Write pending bills to the file
             os.close();
         } catch (IOException e) {
             System.out.println("unsuccessful");
@@ -86,7 +85,7 @@ public class POS implements Serializable{
         try {
             FileInputStream fs = new FileInputStream("Pendings.dat");
             ObjectInputStream os = new ObjectInputStream(fs);
-            pendingBills = (ArrayList<Bill>) os.readObject();
+            pendingBills = (ArrayList<Bill>) os.readObject();           // Recover pending bills from the file
             os.close();
         } catch (IOException e) {
             System.out.println("Pending Bills loading unsuccessfull");
@@ -99,7 +98,7 @@ public class POS implements Serializable{
 
     public static Customer getCustomer(String name) throws CustomerNotFound{
         for (Customer c : customers) {
-            if (c.getName().equalsIgnoreCase(name)) {
+            if (c.getName().equalsIgnoreCase(name)) {        // Return customer of the given name.
                 return c;
             }
         }
@@ -130,9 +129,9 @@ public class POS implements Serializable{
                 String customer = sc.next();
                 boolean registered = false;
                 try {
-                    Customer c = getCustomer(customer);
+                    Customer c = getCustomer(customer);     // Retrieve customer if already registered.
                 } catch (CustomerNotFound e) {
-                    System.out.println("Customer not found. Do you want to register? (y/n)");
+                    System.out.println("Customer not found. Do you want to register? (y/n)");    //Ask to register if not found.
                     String reg = sc.next();
                     if (reg.equals("y")) {
                         customers.add(new Customer(customer, customers.size()+1,"null"));
@@ -143,20 +142,25 @@ public class POS implements Serializable{
                 }
                 Bill bill = new Bill(cashier,registered?customer:" ");
                 createBill(bill);
-            } else if (choice==2) {
+            } else if (choice==2) {        // Display pending bills and ask to continue.
                 Bill bill=null;
                 int option=0;
-                System.out.println("BillNumber" + "    Cashier " + "      Customer Name "+ "      Total " );
-                int billNumber = 1;
-                for (Bill b : pendingBills) {
-                    System.out.printf("%5d  %12s  %15s  %15.2f \n",billNumber, b.cashierName ,b.customerName,b.getTotal());
-                    billNumber++;
+                if (!pendingBills.isEmpty()) {     // Display pending bills
+                    System.out.println("BillNumber" + "    Cashier " + "      Customer Name " + "      Total ");
+                    int billNumber = 1;
+                    for (Bill b : pendingBills) {
+                        System.out.printf("%5d  %12s  %15s  %15.2f \n", billNumber, b.cashierName, b.customerName, b.getTotal());
+                        billNumber++;
+                    }
+                } else {
+                    System.out.println("No pending bills");
                 }
                 System.out.println("Enter the Bill number that you want to continue or 0 to exit:" );
                 option = sc.nextInt();
 
-                if (0 < option && option <= pendingBills.size()) {
+                if (0 < option && option <= pendingBills.size()) {      // Check for given index is valid
                     bill = pendingBills.get(option-1);
+                    bill = new Bill(bill);
                     try {
                         createBill(bill);
                         completedBills.add(bill);
