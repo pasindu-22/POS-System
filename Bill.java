@@ -4,7 +4,7 @@ import java.util.HashMap;
 class Bill implements Serializable {
     String cashierName;
     String customerName;
-    private HashMap<GloceryItem,Integer> itemList = new HashMap<>();
+    private HashMap<GloceryItem,Double> itemList = new HashMap<>();
     private double total=0;
     private double totalDiscount=0;
 
@@ -16,7 +16,7 @@ class Bill implements Serializable {
         this.customerName = customerName;
     }
 
-    public void addItem(GloceryItem item,int quantity) {
+    public void addItem(GloceryItem item,double quantity) {
         itemList.put(item,quantity);
     }
 
