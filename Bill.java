@@ -25,10 +25,11 @@ class Bill implements Serializable {
             throw new NullPointerException();
         }
         System.out.println("---------------Super Saving Super Market---------------");
+        System.out.println("                Branch: " + POS.getBranch());
         System.out.println("Cashier: " + cashierName + "      Customer Name:" + customerName);
         System.out.println("ItemCode     Name      Price      Quantity      Price");
         for (GloceryItem i: itemList.keySet()) {
-            System.out.printf("%3d   %12s   %8.2f    %6d      %8.2f\n",i.getItemCode(),i.getName(),i.getPrice(),itemList.get(i),i.getPrice()*itemList.get(i));
+            System.out.printf("%3d   %12s   %8.2f    %6.2f      %8.2f\n",i.getItemCode(),i.getName(),i.getPrice(),itemList.get(i),i.getPrice()*itemList.get(i));
         }
         System.out.println();
         System.out.println("Total: " + getTotal());
