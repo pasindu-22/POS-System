@@ -10,7 +10,7 @@ public class POS implements Serializable{
     private static String branch = "Galle";
     private static ArrayList<Bill> pendingBills = new ArrayList<>();
     private static ArrayList<Bill> completedBills = new ArrayList<>();
-
+//
     public static GloceryItem getItemDetails() throws ExitException{
         GloceryItem item = null;
         try {
@@ -50,22 +50,19 @@ public class POS implements Serializable{
             System.out.println("Enter quantity:");
             double quantity = sc.nextDouble();
             b.addItem(item,quantity);
-            
-        }
 
-        System.out.println("Do you want to print the bill? (y/n)");
-        String print = sc.next();
-        if (print.equals("y")) {
+        }
+        System.out.println("1.Do you want to print the bill?");
+        System.out.println("2.Do you want to add this bill to pending list?");
+        int print = sc.nextInt();
+        if (print==1) {
             try {
                 b.printBill();
                 completedBills.add(b);
             } catch (NullPointerException e) {
                 System.out.println("No items found in the cart");
             }
-        }
-        System.out.println("Do you want to add this bill to pending list? (y/n)");
-        String pending = sc.next();
-        if (pending.equals("y")) {
+        } else if (print==2) {
             pendingBills.add(b);
         }
     }
