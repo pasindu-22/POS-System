@@ -40,6 +40,8 @@ public class POS implements Serializable{
             try {
                  item = getItemDetails();
             } catch (ExitException e) {
+                b.setTotal();
+                b.setTotalDiscount();
                 break;
             }
             if (item==null) {
@@ -48,14 +50,7 @@ public class POS implements Serializable{
             System.out.println("Enter quantity:");
             double quantity = sc.nextDouble();
             b.addItem(item,quantity);
-
-            //            System.out.println("Do you want to add more items? (y/n)");
-//            String more = sc.next();
-//            if (more.equals("n")) {
-//                b.setTotal();
-//                b.setTotalDiscount();
-//                break;
-//            }
+            
         }
 
         System.out.println("Do you want to print the bill? (y/n)");
@@ -73,6 +68,10 @@ public class POS implements Serializable{
         if (pending.equals("y")) {
             pendingBills.add(b);
         }
+    }
+
+    public static String getBranch() {
+        return branch;
     }
 
     public static void saveBill(){
@@ -140,9 +139,12 @@ public class POS implements Serializable{
                     String reg = sc.next();
                     if (reg.equals("y")) {
                         customers.add(new Customer(customer, customers.size()+1,"null"));
+                        registered = true;
+                    } else if (reg.equalsIgnoreCase("n")){
+                        registered = false;
                     }
                 }
-                Bill bill = new Bill(cashier,customer);
+                Bill bill = new Bill(cashier,registered?customer:" ");
                 createBill(bill);
             } else if (choice==2) {
                 Bill bill=null;
