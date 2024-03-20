@@ -25,7 +25,7 @@ public class POS implements Serializable{
         } catch (ItemCodeNotFound e) {
             System.out.println("Wrong item!");
         } catch (IOException e) {
-
+            e.printStackTrace();
         }
         return item;
     }
@@ -35,13 +35,13 @@ public class POS implements Serializable{
     private static void createBill(POS store, Bill b) {
         Scanner sc = new Scanner(System.in);
         while (true) {
-            System.out.println("Enter item code:");
+            System.out.println("Enter item code: ");
             GloceryItem item = store.GetItemDetails();
             if (item==null) {
                 continue;
             }
             System.out.println("Enter quantity:");
-            int quantity = sc.nextInt();
+            double quantity = sc.nextDouble();
             b.addItem(item,quantity);
             System.out.println("Do you want to add more items? (y/n)");
             String more = sc.next();
@@ -140,27 +140,17 @@ public class POS implements Serializable{
             } else if (choice==2) {
                 Bill bill=null;
                 int option=0;
+                System.out.println("Bill number" + "    Cashier " + "      Customer Name "+ "      Total " );
+                int billNumber = 1;
                 for (Bill b : store.pendingBills) {
-                    System.out.println("Cashier: " + b.cashierName + "      Customer Name:" + b.customerName + "      Total: " + b.getTotal());
-                    System.out.println("1.Select Bill          2.Delete Bill            3.skip           4.Exit");
-
-                    option = sc.nextInt();
-                    switch (option) {
-                        case 1:
-                            bill = b;
-                            break;
-                        case 2:
-                            bill = b;
-                            break;
-                        case 3:
-                            continue;
-                        case 4:
-                            break;
-
-                    }
+                    System.out.println(billNumber + b.cashierName + b.customerName + b.getTotal());
+                    billNumber++;
                 }
+                System.out.println("Enter the Bill number that you want to continue or 0 to exit:" );
+                option = sc.nextInt();
 
-                if (option == 1) {
+                if (0 < option && option <= store.pendingBills.size()) {
+                    bill = store.pendingBills.get(option-1);
                     try {
                         createBill(store, bill);
                         store.completedBills.add(bill);
@@ -170,12 +160,13 @@ public class POS implements Serializable{
                     } catch (ConcurrentModificationException e) {
                         System.out.println("Concurrent Modification Exception");
                     }
-                } else if (option == 2) {
-                    store.pendingBills.remove(bill);
+                } else if (option == 0) {
+                    continue;
                 }
 
             } else if (choice==3) {
                 store.saveBill();
+                System.out.println("Good Bye!");
                 break;
             }
 
